@@ -457,10 +457,11 @@ def enforce_session_limit():
 # ============================================================================
 # MAIN ENDPOINT (Optimization #1, #3, #4, #6, #10)
 # ============================================================================
-@app.post("/honeypot")
+@app.api_route("/honeypot", methods=["POST", "GET"])
 async def honeypot(
-    request: dict = Body(default=None),
-    x_api_key: str = Header(...)
+    raw_request: Request,
+    request: dict | None = Body(default=None),
+    x_api_key: str = Header(None)
 ):
     """
     Main honeypot endpoint with all optimizations applied.
@@ -478,8 +479,14 @@ async def honeypot(
             logger.warning("⚠ Unauthorized access attempt")
             raise HTTPException(status_code=401, detail="Unauthorized")
         
-        # 2. GUVI tester sends EMPTY body → handle gracefully
-        if not request or "message" not in request:
+        # 2. Handle GUVI tester (GET or empty POST)
+        if raw_request.method == "GET" or not request:
+            return {
+                "status": "success",
+                "reply": "Hello? Who is this?"
+            }
+
+        if "message" not in request:
             return {
                 "status": "success",
                 "reply": "Hello? Who is this?"
