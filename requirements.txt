@@ -1,15 +1,5 @@
-# Core Framework
-fastapi==0.109.0
-uvicorn[standard]==0.27.0
-
-# HTTP Client with connection pooling
+fastapi==0.110.0
+uvicorn==0.27.1
 httpx==0.26.0
-
-# Data validation
-pydantic==2.5.3
-
-# ASGI server for production
-gunicorn==21.2.0
-
-# Optional: For better performance on Render.com
-python-multipart==0.0.6
+pydantic==1.10.13
+python-dotenv
